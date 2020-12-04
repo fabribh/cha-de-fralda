@@ -18,7 +18,6 @@ public class Convidado {
     private Integer id;
     private String nome;
     private String telefone;
-    private String email;
     private LocalDateTime data;
 
     private Presente presente;

@@ -15,6 +15,5 @@ public class Presente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
-    private String descricao;
     private Integer quantidade;
 }
