@@ -5,10 +5,7 @@ import br.com.fabribh.chadefralda.services.ConvidadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,6 +20,11 @@ public class ConvidadoController {
     public ResponseEntity<ConvidadoDTO> criarConvidado (@Valid @RequestBody ConvidadoDTO convidadoDTO) {
 
         return new ResponseEntity<>(convidadoService.save(convidadoDTO),HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/sorteio")
+    public ResponseEntity<ConvidadoDTO> sorteio(){
+        return ResponseEntity.ok().body(convidadoService.sorteio());
     }
 
 }
