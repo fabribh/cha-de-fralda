@@ -1,5 +1,6 @@
 package br.com.fabribh.chadefralda.services;
 
+import br.com.fabribh.chadefralda.api.dto.ConvidadoDTO;
 import br.com.fabribh.chadefralda.model.entities.Estoque;
 import br.com.fabribh.chadefralda.model.entities.Presente;
 import br.com.fabribh.chadefralda.model.repositories.EstoqueRepository;
@@ -44,5 +45,15 @@ public class EstoqueService {
         }
 
         return resultado;
+    }
+
+    public void validarEstoque(Estoque estoque, ConvidadoDTO dto) throws Exception {
+
+        Estoque estoqueDisponivel = repository.getOne(estoque.getId());
+
+        if(estoqueDisponivel.getQuantidade() < dto.getQuantidade()) {
+            throw new Exception("Saldo em estoque insuficiente! Qauntidade disponnivel: " + estoqueDisponivel.getQuantidade());
+        }
+
     }
 }

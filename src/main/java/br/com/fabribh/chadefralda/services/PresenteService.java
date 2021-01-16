@@ -25,18 +25,7 @@ public class PresenteService {
         presente.setQuantidade(dto.getQuantidade());
         presente.setConvidado(convidadoSaved);
 
-        validarEstoque(estoque, dto);
-
         return repository.save(presente);
     }
 
-    private void validarEstoque(Estoque estoque, ConvidadoDTO dto) throws Exception {
-
-        Estoque estoqueDisponivel = estoqueRepository.getOne(estoque.getId());
-
-        if(estoqueDisponivel.getQuantidade() < dto.getQuantidade()) {
-            throw new Exception("Saldo em estoque insuficiente! Qauntidade disponnivel: " + estoqueDisponivel.getQuantidade());
-        }
-
-    }
 }

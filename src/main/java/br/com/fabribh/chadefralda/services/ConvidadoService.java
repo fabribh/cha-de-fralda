@@ -35,9 +35,11 @@ public class ConvidadoService {
                 dto.getTelefone(),
                 setDataDaCriacao());
 
-        Convidado convidadoSaved = convidadoRepository.save(convidado);
-
         Estoque estoque = estoqueService.findOne(dto.getEstoque().getId());
+
+        estoqueService.validarEstoque(estoque, dto);
+
+        Convidado convidadoSaved = convidadoRepository.save(convidado);
 
         Presente presente = presenteService.salvarPresente(dto, estoque, convidadoSaved);
 
