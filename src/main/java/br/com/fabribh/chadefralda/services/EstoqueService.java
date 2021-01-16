@@ -17,7 +17,7 @@ public class EstoqueService {
 
     public List<Estoque> listAll() {
 
-        return repository.findAll();
+        return repository.listaFraldasQuantidadePostivo();
     }
 
     public Estoque findOne(Integer estoqueId) {
