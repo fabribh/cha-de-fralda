@@ -1,7 +1,6 @@
 package br.com.fabribh.chadefralda.services;
 
 import br.com.fabribh.chadefralda.api.dto.ConvidadoDTO;
-import br.com.fabribh.chadefralda.api.dto.EstoqueDTO;
 import br.com.fabribh.chadefralda.model.entities.Convidado;
 import br.com.fabribh.chadefralda.model.entities.Estoque;
 import br.com.fabribh.chadefralda.model.entities.Presente;
@@ -52,7 +51,21 @@ public class ConvidadoService {
 
         presenteRepository.save(presente);
 
+        estoque.setQuantidade(atualizar(estoque.getQuantidade(), presente.getQuantidade()));
+        estoqueRepository.save(estoque);
+
         return new ConvidadoDTO(convidadoSaved);
+    }
+
+    private Integer atualizar(Integer emEstoque, Integer saidaEstoque) {
+
+        int resultado = emEstoque - saidaEstoque;
+
+        if (resultado < 0) {
+            return 0;
+        }
+
+        return resultado;
     }
 
     public ConvidadoDTO sorteio() {
