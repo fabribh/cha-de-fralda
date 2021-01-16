@@ -1,12 +1,20 @@
 package br.com.fabribh.chadefralda.services;
 
 import br.com.fabribh.chadefralda.api.dto.ConvidadoDTO;
+import br.com.fabribh.chadefralda.api.dto.EstoqueDTO;
 import br.com.fabribh.chadefralda.model.entities.Convidado;
+import br.com.fabribh.chadefralda.model.entities.Estoque;
+import br.com.fabribh.chadefralda.model.entities.Presente;
 import br.com.fabribh.chadefralda.model.repositories.ConvidadoRepository;
-import org.modelmapper.ModelMapper;
+import br.com.fabribh.chadefralda.model.repositories.EstoqueRepository;
+import br.com.fabribh.chadefralda.model.repositories.PresenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -17,14 +25,34 @@ public class ConvidadoService {
     private ConvidadoRepository convidadoRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private EstoqueRepository estoqueRepository;
 
-    public ConvidadoDTO save(ConvidadoDTO convidadoDTO) {
-        Convidado convidado = new Convidado();
-        modelMapper.map(convidadoDTO, convidado);
+    @Autowired
+    private PresenteRepository presenteRepository;
+
+    @Transactional
+    public ConvidadoDTO save(ConvidadoDTO dto) {
+
+        Instant agora = Instant.now();
+        ZoneId brasilSP = ZoneId.of("America/Sao_Paulo");
+
+        Convidado convidado = new Convidado(null,
+                dto.getNome(),
+                dto.getTelefone(),
+                ZonedDateTime.ofInstant(agora, brasilSP));
+
+        Estoque estoque = estoqueRepository.getOne(dto.getEstoque().getId());
+
         Convidado convidadoSaved = convidadoRepository.save(convidado);
-        modelMapper.map(convidadoSaved, convidadoDTO);
-        return convidadoDTO;
+
+        Presente presente = new Presente();
+        presente.setQuantidade(dto.getQuantidade());
+        presente.setConvidado(convidadoSaved);
+        presente.setEstoque(estoque);
+
+        presenteRepository.save(presente);
+
+        return new ConvidadoDTO(convidadoSaved);
     }
 
     public ConvidadoDTO sorteio() {
@@ -32,13 +60,14 @@ public class ConvidadoService {
         ConvidadoDTO convidadoSorteado = new ConvidadoDTO();
         List<Convidado> convidados = convidadoRepository.findAll();
         Convidado convidado = getConvidadoSorteado(convidados);
-        modelMapper.map(convidado, convidadoSorteado);
+//        modelMapper.map(convidado, convidadoSorteado);
         return convidadoSorteado;
     }
 
     private Convidado getConvidadoSorteado(List<Convidado> convidados) {
         int quantidadeConvidados = convidados.size();
         Integer idSorteado = ThreadLocalRandom.current().nextInt(1, quantidadeConvidados);
-        return convidadoRepository.buscarSorteado(idSorteado);
+        return convidadoRepository.findById(idSorteado)
+                .orElseThrow();
     }
 }

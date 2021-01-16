@@ -1,24 +1,30 @@
 package br.com.fabribh.chadefralda.model.entities;
 
-
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
 
-@Getter
-@Setter
+@Data
 @Entity
-@Table(name = "tb_convidados")
-public class Convidado {
+@NoArgsConstructor
+@Table(name = "tb_convidado")
+public class Convidado implements Serializable {
+
+    private static final long serialVersionUID = -3489222657680959303L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
     private String telefone;
-    private LocalDateTime data;
+    private ZonedDateTime criado_em;
 
-    private Presente presente;
+    public Convidado(Integer id, String nome, String telefone, ZonedDateTime criado_em) {
+        this.id = id;
+        this.nome = nome;
+        this.telefone = telefone;
+        this.criado_em = criado_em;
+    }
 }

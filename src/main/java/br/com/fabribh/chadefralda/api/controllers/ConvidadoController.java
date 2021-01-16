@@ -1,6 +1,7 @@
 package br.com.fabribh.chadefralda.api.controllers;
 
 import br.com.fabribh.chadefralda.api.dto.ConvidadoDTO;
+import br.com.fabribh.chadefralda.api.dto.EstoqueDTO;
 import br.com.fabribh.chadefralda.services.ConvidadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,9 @@ public class ConvidadoController {
     private ConvidadoService convidadoService;
 
     @PostMapping
-    public ResponseEntity<ConvidadoDTO> criarConvidado (@Valid @RequestBody ConvidadoDTO convidadoDTO) {
+    public ResponseEntity<EstoqueDTO> salvarConvidado(@Valid @RequestBody ConvidadoDTO convidadoDTO) {
 
-        return new ResponseEntity<>(convidadoService.save(convidadoDTO),HttpStatus.CREATED);
+        return new ResponseEntity(convidadoService.save(convidadoDTO),HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/sorteio")
