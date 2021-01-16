@@ -5,8 +5,6 @@ import br.com.fabribh.chadefralda.model.entities.Convidado;
 import br.com.fabribh.chadefralda.model.entities.Estoque;
 import br.com.fabribh.chadefralda.model.entities.Presente;
 import br.com.fabribh.chadefralda.model.repositories.ConvidadoRepository;
-import br.com.fabribh.chadefralda.model.repositories.EstoqueRepository;
-import br.com.fabribh.chadefralda.model.repositories.PresenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,48 +22,36 @@ public class ConvidadoService {
     private ConvidadoRepository convidadoRepository;
 
     @Autowired
-    private EstoqueRepository estoqueRepository;
+    private EstoqueService estoqueService;
 
     @Autowired
-    private PresenteRepository presenteRepository;
+    private PresenteService presenteService;
 
     @Transactional
     public ConvidadoDTO save(ConvidadoDTO dto) {
 
-        Instant agora = Instant.now();
-        ZoneId brasilSP = ZoneId.of("America/Sao_Paulo");
-
         Convidado convidado = new Convidado(null,
                 dto.getNome(),
                 dto.getTelefone(),
-                ZonedDateTime.ofInstant(agora, brasilSP));
-
-        Estoque estoque = estoqueRepository.getOne(dto.getEstoque().getId());
+                setDataDaCriacao());
 
         Convidado convidadoSaved = convidadoRepository.save(convidado);
 
-        Presente presente = new Presente();
-        presente.setQuantidade(dto.getQuantidade());
-        presente.setConvidado(convidadoSaved);
-        presente.setEstoque(estoque);
+        Estoque estoque = estoqueService.findOne(dto.getEstoque().getId());
 
-        presenteRepository.save(presente);
+        Presente presente = presenteService.salvarPresente(dto, estoque, convidadoSaved);
 
-        estoque.setQuantidade(atualizar(estoque.getQuantidade(), presente.getQuantidade()));
-        estoqueRepository.save(estoque);
+        estoqueService.atualizarEstoque(estoque, presente);
 
         return new ConvidadoDTO(convidadoSaved);
     }
 
-    private Integer atualizar(Integer emEstoque, Integer saidaEstoque) {
+    private ZonedDateTime setDataDaCriacao() {
 
-        int resultado = emEstoque - saidaEstoque;
+        Instant agora = Instant.now();
+        ZoneId brasilSP = ZoneId.of("America/Sao_Paulo");
 
-        if (resultado < 0) {
-            return 0;
-        }
-
-        return resultado;
+        return ZonedDateTime.ofInstant(agora, brasilSP);
     }
 
     public ConvidadoDTO sorteio() {
