@@ -28,7 +28,7 @@ public class ConvidadoService {
     private PresenteService presenteService;
 
     @Transactional
-    public ConvidadoDTO save(ConvidadoDTO dto) {
+    public ConvidadoDTO save(ConvidadoDTO dto) throws Exception {
 
         Convidado convidado = new Convidado(null,
                 dto.getNome(),

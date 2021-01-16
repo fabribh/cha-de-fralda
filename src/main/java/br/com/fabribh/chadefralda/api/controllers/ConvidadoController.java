@@ -18,7 +18,7 @@ public class ConvidadoController {
     private ConvidadoService convidadoService;
 
     @PostMapping
-    public ResponseEntity<EstoqueDTO> salvarConvidado(@Valid @RequestBody ConvidadoDTO convidadoDTO) {
+    public ResponseEntity<EstoqueDTO> salvarConvidado(@Valid @RequestBody ConvidadoDTO convidadoDTO) throws Exception {
 
         return new ResponseEntity(convidadoService.save(convidadoDTO),HttpStatus.CREATED);
     }
