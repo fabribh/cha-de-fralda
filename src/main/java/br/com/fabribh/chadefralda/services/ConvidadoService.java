@@ -4,6 +4,7 @@ import br.com.fabribh.chadefralda.api.dto.ConvidadoDTO;
 import br.com.fabribh.chadefralda.model.entities.Convidado;
 import br.com.fabribh.chadefralda.model.entities.Estoque;
 import br.com.fabribh.chadefralda.model.entities.Presente;
+import br.com.fabribh.chadefralda.model.modelExceptions.ChaException;
 import br.com.fabribh.chadefralda.model.repositories.ConvidadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class ConvidadoService {
 
     @Transactional
     public ConvidadoDTO save(ConvidadoDTO dto) throws Exception {
+
+        if (telefoneJaExiste(dto)) {
+            throw new ChaException("Telefone já existente.");
+        }
 
         Convidado convidado = new Convidado(null,
                 dto.getNome(),
@@ -70,5 +75,16 @@ public class ConvidadoService {
         Integer idSorteado = ThreadLocalRandom.current().nextInt(1, quantidadeConvidados);
         return convidadoRepository.findById(idSorteado)
                 .orElseThrow();
+    }
+
+    private boolean telefoneJaExiste(ConvidadoDTO convidadoDTO) {
+        Convidado convidado;
+        List<Convidado> convidados = convidadoRepository.findAll();
+        for (Convidado c : convidados) {
+            if (c.getTelefone().equals(convidadoDTO.getTelefone())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

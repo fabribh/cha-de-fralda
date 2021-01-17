@@ -3,9 +3,11 @@ package br.com.fabribh.chadefralda.services;
 import br.com.fabribh.chadefralda.api.dto.ConvidadoDTO;
 import br.com.fabribh.chadefralda.model.entities.Estoque;
 import br.com.fabribh.chadefralda.model.entities.Presente;
+import br.com.fabribh.chadefralda.model.modelExceptions.ChaException;
 import br.com.fabribh.chadefralda.model.repositories.EstoqueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -52,7 +54,7 @@ public class EstoqueService {
         Estoque estoqueDisponivel = repository.getOne(estoque.getId());
 
         if(estoqueDisponivel.getQuantidade() < dto.getQuantidade()) {
-            throw new Exception("Saldo em estoque insuficiente! Qauntidade disponnivel: " + estoqueDisponivel.getQuantidade());
+            throw new ChaException("Saldo em estoque insuficiente! Quantidade disponivel: " + estoqueDisponivel.getQuantidade() + ". Por favor selecione outra quantidade ou outro presente.");
         }
 
     }
